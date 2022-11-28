@@ -34,7 +34,7 @@
     margin-left: auto;
     margin-right: auto;
     display: block;
-    display:inline-flexbox;
+    /* display:inline-flexbox; */
 
 }
 .bodyColor{
