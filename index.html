@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 27 - Asynchronous Background</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class=bodyColor>
+
+<div>
+    <h3 style="text-align: center;">Random Colors: Asynchronous Background</h3>
+
+    <div class="button-container"style="background-color: lightgrey;">
+    <button id="startButton" class="allButtons" type="button" onclick="start()" style="height: auto;"> Start Color Change</button>
+    <button id="stopButton" class="allButtons" type="button" onclick="stopTimer()"style="height: auto;" disabled> Stop Color Change</button>
+    <button id="resetButton" class="allButtons" type="button" onclick="location.reload(true)"style="height: auto;"> Reset Application</button>
+    </div>
+    <div style="text-align: center; margin-right: auto; margin-left: auto; ">
+        <p> <h3> Change Color Interval: <input id="frequency" type="number" min="0.5" step="0.5" max="10" value="1" style="height: 20px;" oninput="changeInterval()">secs.</h3>
+            <h3> Change Count Down Timer: <input id="countDownTime" type="number" min="1" max="20" value="5" style="height: 20px;">secs.</h3>
+        </p> 
+    </div>
+    
+    <div style="text-align: center;"> 
+        <h2 id="colorHead" style="color:  rgb(11, 145, 179);">RGB COLOR VALUES CURRENTLY GENERATED</h2>
+
+        <table style="border: solid gold; background-color: green; justify-content:space-evenly; align-content: center; text-align: center; align-items: center;width: 300px; height: 100px; font-size: 36pt; display:inline-flex;">
+            <tr style="justify-content:space-evenly; align-content: center; text-align: center; align-items: center;width: 300px; display:inline-flex;">
+                <td id="td1" style="background-color:white; padding-right: 4px;" >R</td>
+                <td id="td2" style="background-color:white;padding-right: 4px; padding-left: 4px;">G</td>
+                <td id="td3" style="background-color:white;padding-left: 4px;">B</td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h1 id="stopColor" style="text-align: center;">
+    </div>
+</div>
+
+</body>
+<script>
+
+function changingColor(){
+    let colorHead = document.getElementById("colorHead");
+    let red = Math.floor(Math.random() * 255);
+    let green = Math.floor(Math.random() * 255);
+    let blue = Math.floor(Math.random() * 255);
+    document.getElementById("colorHead").style.color = `rgb(${red*2/3}, ${green*2/3}, ${blue*2/3})`;
+
+    // generate rgb colors
+   document.body.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+   document.getElementById("td1").innerHTML = red;
+   document.getElementById("td2").innerHTML = green;
+   document.getElementById("td3").innerHTML = blue;
+   document.getElementById("td1").style.color = `rgb(${red}, ${green}, ${blue})`;
+   document.getElementById("td2").style.color = `rgb(${red}, ${green}, ${blue})`;
+   document.getElementById("td3").style.color = `rgb(${red}, ${green}, ${blue})`;
+
+}
+//checks when user changes the value in input field for color change interval
+function changeInterval() {
+    if(document.getElementById("frequency").value >=0.5 && document.getElementById("frequency").value <=10 &&
+        document.getElementById("stopButton").disabled == false) {
+        clearInterval(IntervalId);
+        // setTimeout(changingColor(), 1000);
+        start();
+        
+    }
+
+}
+function start() {
+    if(document.getElementById("frequency").value >=0.5 && document.getElementById("frequency").value <=10) {
+        document.getElementById("startButton").disabled = true; // when process starts, start button must be disabled
+        document.getElementById("stopButton").disabled = false;  // when process starts, stop button must be enabled
+        let frequency=document.getElementById("frequency").value * 1000;
+            IntervalId  = setInterval(changingColor, frequency);
+    }else {
+        alert("Please fill the color interval first with a value between 0.5 and 10.");
+    }
+}
+// performs the stop color change procedure and ensures attributes are set accordingly
+function stopTimer() {
+    if( confirm("Do you really want to stop?") == true) {
+        document.getElementById("stopButton").disabled = true; //ensure that stopButton is disabled to prevent re-initiation while counting down
+        document.getElementById("frequency").disabled = true; //ensure that user
+        document.getElementById("countDownTime").disabled = true;
+        stopColorChange();
+    }
+}
+function stopColorChange (){
+    //confirm("Do you really want to stop?");
+    let t1 = new Date().getTime();
+    //sets the countdown interval by 1sec (1000msec)
+    let timeCalc = setInterval(function() {
+        let t2 = new Date().getTime();
+        let timeDiff = t2 - t1;
+        let seconds = Math.floor ((timeDiff % (1000 * 60)) / 1000);
+        let countDownTime = document.getElementById("countDownTime").value;
+        let t3 = countDownTime-seconds
+        document.getElementById("stopColor").innerHTML = "Crazy color stops in : "  + t3;
+
+              if (t3 == -1 ){
+            clearInterval(timeCalc);
+            clearInterval(IntervalId);
+            document.getElementById("stopColor").innerHTML = "";
+            document.getElementById("stopButton").disabled = true; // when process stops, stop button must be disabled
+            document.getElementById("startButton").disabled = false; // when process stops, start button must be enabled
+            document.getElementById("frequency").disabled = false;
+            document.getElementById("countDownTime").disabled = false;
+        } 
+    }, 1000);
+    
+}
+
+</script>
+</html>
